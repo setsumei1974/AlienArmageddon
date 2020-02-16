@@ -1,5 +1,6 @@
 #Module for Functionality of the Game
 import pygame
+from pygame.sprite import Group
 
 #Module to Import Settings
 from settings import Settings
@@ -21,12 +22,15 @@ def run_game():
     bg_color = (0, 25, 51)
 
     #Make a Ship
-    ship = Ship(screen)
+    ship = Ship(ai_settings, screen)
+    #Make a Group to Store Bullets
+    bullets = Group()
 
     #Start the Main Loop for the Game
     while True:
-        gf.check_events(ship)
+        gf.check_events(ai_settings, screen, ship, bullets)
         ship.update()
-        gf.update_screen(ai_settings, screen, ship)
+        bullets.update()
+        gf.update_screen(ai_settings, screen, ship, bullets)
         
 run_game()

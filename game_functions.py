@@ -2,22 +2,43 @@ import pygame
 
 import sys
 
-def check_events(ship):
+from bullet import Bullet
+
+def check_keydown_events(event, ai_settings, screen, ship, bullets):
+    #Respond to Keypresses
+    if event.key == pygame.K_RIGHT:
+        ship.moving_right = True
+    elif event.key == pygame.K_LEFT:
+        ship.moving_left = True
+    elif event.key == pygame.K_SPACE:
+        #Create a New Bullet to Add to the Bullet Group
+        new_bullet = Bullet(ai_settings, screen, ship)
+        bullets.add(new_bullet)
+
+def check_keyup_events(event, ship):
+    #Respond to Key Releases
+    if event.key == pygame.K_RIGHT:
+        ship.moving_right = False
+    elif event.key == pygame.K_LEFT:
+        ship.moving_left = False
+
+def check_events(ai_settings, screen, ship, bullets):
     #Respond to Keypresses and Mouse Events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
-                ship.moving_right = True
+            check_keydown_events(event, ai_settings, screen, ship, bullets)
         elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_RIGHT:
-                ship.moving_right = False
-
-def update_screen(ai_settings, screen, ship):
+            check_keyup_events(event, ship)
+            
+def update_screen(ai_settings, screen, ship, bullets):
     #Update Images on the Screen and Flip to the New Screen
     #Redraw the Screen during Each Pass through the Loop
     screen.fill(ai_settings.bg_color)
+    #Redraw All Bullets behind Ship and Aliens
+    for bullet in bullets.sprites():
+        bullet.draw_bullet()
     ship.blitme()
 
     #Make the Most Recently Drawn Screen Visible
